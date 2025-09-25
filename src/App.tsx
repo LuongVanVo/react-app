@@ -1,4 +1,4 @@
-import LoginPage from "@/modules/login/LoginPage"
+import LoginPage from "@/components/LoginPage"
 import KeyListRendering from "@/modules/list-rendering/keyListRendering"
 function App() {
   return (
