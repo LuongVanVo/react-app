@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "prepare": "husky install",
-    "commit": "cz"
+    "commit": "cz",
+    "test": "echo \"No tests specified\" && exit 0"
   },
   "config": {
     "commitizen": {
