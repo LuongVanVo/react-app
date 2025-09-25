@@ -1,4 +1,4 @@
-import { LoginForm } from "@/components/loginForm"
+import { LoginForm } from "@/modules/login/loginForm"
 import backgroundLogin from "@/assets/img/background_login.jpg"
 
 export default function LoginPage() {
