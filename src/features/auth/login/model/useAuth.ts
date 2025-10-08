@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { authApi } from "@/features/auth/login/api/authApi";
 import type { ApiError, LoginRequest } from "@/features/auth/login/api/type";
+import Cookies from "js-cookie";
 
 export const useAuth = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -11,8 +12,16 @@ export const useAuth = () => {
     setError(null);
     try {
       const response = await authApi.login(credentials);
-      cookieStore.set("accessToken", response.accessToken);
-      cookieStore.set("refreshToken", response.refreshToken);
+      Cookies.set("accessToken", response.accessToken, {
+        expires: 1,
+        secure: true,
+        sameSite: "strict",
+      });
+      Cookies.set("refreshToken", response.refreshToken, {
+        expires: 7,
+        secure: true,
+        sameSite: "strict",
+      });
       alert("Login successful");
       return response;
     } catch (err) {

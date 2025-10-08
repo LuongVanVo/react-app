@@ -1,4 +1,5 @@
 import axios from "axios";
+import Cookies from "js-cookie";
 
 export const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -10,8 +11,8 @@ export const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   (config) => {
-    const accessToken = cookieStore.get("accessToken");
-    const refreshToken = cookieStore.get("refreshToken");
+    const accessToken = Cookies.get("accessToken");
+    const refreshToken = Cookies.get("refreshToken");
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
@@ -31,8 +32,8 @@ apiClient.interceptors.response.use(
   },
   (error) => {
     if (error.response.status === 401) {
-      cookieStore.delete("accessToken");
-      cookieStore.delete("refreshToken");
+      Cookies.remove("accessToken");
+      Cookies.remove("refreshToken");
       window.location.href = "/auth/login";
     }
     return Promise.reject(error);
