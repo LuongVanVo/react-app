@@ -1,12 +1,12 @@
-import { LoginForm } from "@/modules/login/loginForm"
-import backgroundLogin from "@/assets/img/background_login.jpg"
+import { LoginWidget } from "@/widgets/login"
+import backgroundLogin from "@/shared/assets/img/background_login.jpg"
 
-export default function LoginPage() {
+export function LoginPage() {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 min-h-screen bg-[#0A0A0A]">
             {/* Login form  */}
             <div className="flex flex-col justify-center items-center p-6 md:p-12">
-                <LoginForm />
+                <LoginWidget />
             </div>
 
             {/* Picture */}
