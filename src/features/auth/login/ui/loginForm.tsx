@@ -20,7 +20,7 @@ function LoginForm({
 } & React.ComponentProps<"form">): JSX.Element {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { isLoading, login, error } = useAuth();
+  const { isLoading, login } = useAuth();
 
   async function submit(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
