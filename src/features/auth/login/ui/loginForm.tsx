@@ -1,7 +1,7 @@
 import { cn } from "@/shared/lib/utils";
 import type React from "react";
 import type { JSX } from "react";
-import { FaGithub } from "react-icons/fa";
+import { FaGoogle } from "react-icons/fa";
 
 import { Button } from "@/shared/ui/button/button";
 import { Label } from "@/shared/ui/label/label";
@@ -10,8 +10,7 @@ import { Input } from "@/shared/ui/input/input";
 import { useState } from "react";
 import { useAuth } from "@/features/auth/login/model/useAuth";
 import type { ApiError } from "@/features/auth/login/api/type";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
 function LoginForm({
   className,
   ...props
@@ -21,16 +20,22 @@ function LoginForm({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { isLoading, login } = useAuth();
-
+  const navigate = useNavigate();
   async function submit(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
 
     try {
       await login({ email, password });
+      navigate("/home");
     } catch (err) {
       const apiError = err as ApiError
       alert(apiError.message)
     }
+  }
+
+  const handleGoogleLogin = async () => {
+    const backendURL = import.meta.env.VITE_API_BASE_URL
+    window.location.href = `${backendURL}/auth/google`
   }
 
   return (
@@ -51,7 +56,7 @@ function LoginForm({
         <Input
           id="email"
           type="email"
-          placeholder="m@example.com"
+          placeholder="your@gmail.com"
           className="bg-[#1E1E1E] text-white border-gray-600"
           required
           onChange={(e) => setEmail(e.target.value)}
@@ -90,9 +95,9 @@ function LoginForm({
       </div>
 
       {/* login with github */}
-      <Button className="bg-[#1E1E1E] text-white w-full border border-gray-600 hover:bg-[#2A2A2A] flex items-center justify-center gap-2 mt-4">
-        <FaGithub />
-        Login with GitHub
+      <Button className="bg-[#1E1E1E] text-white w-full border border-gray-600 hover:bg-[#2A2A2A] flex items-center justify-center gap-2 mt-4 cursor-pointer" onClick={handleGoogleLogin}>
+        <FaGoogle />
+        Login with Google
       </Button>
 
       {/* Chưa có tài khoản? Đăng ký */}

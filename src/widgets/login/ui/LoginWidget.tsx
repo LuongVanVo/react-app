@@ -1,4 +1,4 @@
-import { LoginForm } from "@/features/auth/login/ui/loginForm";
+import { LoginForm } from "@/features/auth/login/ui/LoginForm";
 
 export function LoginWidget() {
     return (
