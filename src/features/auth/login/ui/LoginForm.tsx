@@ -25,11 +25,13 @@ function LoginForm({
     e.preventDefault();
 
     try {
-      await login({ email, password });
-      navigate("/home");
+      const response = await login({ email, password });
+      if (response) {
+        navigate("/home");
+      }
     } catch (err) {
-      const apiError = err as ApiError
-      alert(apiError.message)
+      const apiError = err as ApiError;
+      alert(apiError.message);
     }
   }
 
