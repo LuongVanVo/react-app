@@ -6,6 +6,12 @@ export interface ApiError {
   statusCode: number;
 }
 
+export interface BackendResponse<T> {
+  message?: string;
+  metadata?: T;
+  statusCode?: number;
+  reasonStatusCode?: string;
+}
 // Fetch factory
 export const fetchFactory = {
   // GET
@@ -31,8 +37,12 @@ export const fetchFactory = {
     config?: AxiosRequestConfig,
   ): Promise<T> => {
     try {
-      const response = await apiClient.post<T>(url, data, config);
-      return response.data;
+      const response = await apiClient.post<BackendResponse<T>>(
+        url,
+        data,
+        config,
+      );
+      return response.data.metadata || (response.data as unknown as T);
     } catch (error: any) {
       throw {
         message:
