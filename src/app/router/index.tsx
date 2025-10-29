@@ -4,6 +4,7 @@ import { Route, Routes } from "react-router-dom"
 import { InputOTPForm } from "@/features/auth/login/ui/FormInputOTP"
 import { HomePage } from "@/pages/home/ui/HomePage"
 import { AuthRedirect } from "./AuthRedirect"
+import InputEmail from "@/pages/inputEmail/index"
 
 export function AppRoutes() {
     return (
@@ -27,6 +28,9 @@ export function AppRoutes() {
                 <AuthRedirect>
                     <HomePage />
                 </AuthRedirect>
+            }></Route>
+            <Route path="/forgot-password" element={
+                <InputEmail />
             }></Route>
             
             {/* 404 */}
