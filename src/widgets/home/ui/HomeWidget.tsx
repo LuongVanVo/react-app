@@ -1,11 +1,23 @@
+import { useAuth } from "@/features/auth/login/model/useAuth";
+import type { ApiError } from "@/features/auth/login/api/type";
+    
 export function HomeWidget() {
+    const { logout } = useAuth();
+    const handleLogout = async () => {
+        try {
+            await logout();
+        } catch (err) {
+            const apiError = err as ApiError;
+            alert(apiError.message);
+        }
+    };
     return (
         <div className="container mx-auto px-4 py-8">
             {/* Header */}
             <header className="flex justify-between items-center mb-8 bg-white rounded-lg shadow p-6">
                 <h1 className="text-3xl font-bold text-gray-800">Home</h1>
                 <button
-                    // onClick={handleLogout}
+                    onClick={ handleLogout }
                     className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors"
                 >
                     Logout

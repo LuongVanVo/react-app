@@ -14,13 +14,18 @@ import type {
 
 export const authApi = {
   login: (credentials: LoginRequest): Promise<LoginResponse> => {
-    return fetchFactory.post<LoginResponse>(AuthEndpoint.LOGIN, credentials);
+    return fetchFactory.post<LoginResponse>(AuthEndpoint.LOGIN, credentials, {
+      withCredentials: true,
+    });
   },
 
   register: (credentials: RegisterRequest): Promise<RegisterResponse> => {
     return fetchFactory.post<RegisterResponse>(
       AuthEndpoint.REGISTER,
       credentials,
+      {
+        withCredentials: true,
+      },
     );
   },
 
@@ -28,6 +33,26 @@ export const authApi = {
     return fetchFactory.post<VerifyOTPResponse>(
       AuthEndpoint.VERIFY_EMAIL,
       credentials,
+      {
+        withCredentials: true,
+      },
     );
+  },
+
+  logout: (): Promise<void> => {
+    return fetchFactory.post<void>(
+      AuthEndpoint.LOGOUT,
+      {},
+      {
+        withCredentials: true,
+      },
+    );
+  },
+
+  checkAuth: async (): Promise<boolean> => {
+    const response = await fetchFactory.get<boolean>(AuthEndpoint.CHECK_AUTH, {
+      withCredentials: true,
+    });
+    return response;
   },
 };
