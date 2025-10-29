@@ -6,7 +6,6 @@ import type {
   VerifyOTPRequest,
 } from "@/features/auth/login/api/type";
 import type { RegisterRequest } from "@/features/auth/login/api/type";
-import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 
 export const useAuth = () => {
@@ -19,16 +18,6 @@ export const useAuth = () => {
     setError(null);
     try {
       const response = await authApi.login(credentials);
-      Cookies.set("accessToken", response.accessToken, {
-        expires: 1,
-        secure: true,
-        sameSite: "strict",
-      });
-      Cookies.set("refreshToken", response.refreshToken, {
-        expires: 7,
-        secure: true,
-        sameSite: "strict",
-      });
       return response;
     } catch (err) {
       const apiError = err as ApiError;
@@ -75,11 +64,23 @@ export const useAuth = () => {
     }
   };
 
+  const logout = async () => {
+    try {
+      await authApi.logout();
+      navigate("/");
+    } catch (err) {
+      const apiError = err as ApiError;
+      setError(apiError);
+      alert(apiError.message);
+    }
+  };
+
   return {
     isLoading,
     login,
     error,
     register,
     verifyOTP,
+    logout,
   };
 };

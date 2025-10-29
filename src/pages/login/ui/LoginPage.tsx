@@ -25,17 +25,17 @@ export function LoginPage() {
             setTimeout(() => {
                 const token = Cookies.get('accessToken');
                 if (token) {
-                    alert('🎉 Đăng nhập với Google thành công!');
+                    alert('Đăng nhập với Google thành công!');
                     navigate('/home', { replace: true });
                 } else {
-                    alert('❌ Không thể lấy token. Vui lòng thử lại!');
+                    alert('Không thể lấy token. Vui lòng thử lại!');
                     navigate('/', { replace: true });
                 }
             }, 500); // Tăng delay lên 500ms
         }
 
         if (error === 'auth_failed') {
-            alert('❌ Đăng nhập với Google thất bại. Vui lòng thử lại!');
+            alert('Đăng nhập với Google thất bại. Vui lòng thử lại!');
             navigate('/', { replace: true });
         }
     }, [searchParams, navigate]);
