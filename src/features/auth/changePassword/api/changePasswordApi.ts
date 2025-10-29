@@ -1,5 +1,5 @@
 import { AuthEndpoint, fetchFactory } from "@/shared/api";
-import type { ForgotPasswordRequest, ForgotPasswordResponse } from "./type";
+import type { ForgotPasswordResponse } from "./type";
 
 export const changePasswordApi = {
   forgotPassword: (email: string): Promise<ForgotPasswordResponse> => {
