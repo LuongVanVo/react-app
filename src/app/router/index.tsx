@@ -1,6 +1,6 @@
 import { RegisterPage } from "@/pages/register/ui/RegisterPage"
 import { LoginPage } from "@/pages/login/ui/LoginPage"
-import { BrowserRouter, createBrowserRouter, Route, Routes } from "react-router-dom"
+import { Route, Routes } from "react-router-dom"
 import { InputOTPForm } from "@/features/auth/login/ui/FormInputOTP"
 import { HomePage } from "@/pages/home/ui/HomePage"
 import { AuthRedirect } from "./AuthRedirect"

@@ -1,6 +1,5 @@
 import type { ApiError } from "@/features/auth/login/api/type";
 import { userApi } from "../api/userApi";
-import Cookies from "js-cookie";
 
 export const useUser = () => {
   const getAllUsers = async () => {
