@@ -16,8 +16,46 @@ export const useChangePassword = () => {
     }
   };
 
+  const verifyOTP = async (email: string, code: string) => {
+    setIsLoading(true);
+    try {
+      const response = await changePasswordApi.verifyOTP({ email, code });
+      if (!response) throw new Error("Failed to verify OTP");
+      return response;
+    } catch (err) {
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const changePassword = async (
+    email: string,
+    newPassword: string,
+    confirmPassword: string,
+    code: string,
+  ) => {
+    setIsLoading(true);
+    try {
+      const response = await changePasswordApi.changePassword({
+        email,
+        newPassword,
+        confirmPassword,
+        code,
+      });
+      if (!response) throw new Error("Failed to change password");
+      return response;
+    } catch (err) {
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return {
     isLoading,
     forgotPassword,
+    verifyOTP,
+    changePassword,
   };
 };

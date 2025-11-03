@@ -1,38 +1,65 @@
-import { RegisterPage } from "@/pages/register/ui/RegisterPage"
-import { LoginPage } from "@/pages/login/ui/LoginPage"
+import React from "react"
 import { Route, Routes } from "react-router-dom"
-import { InputOTPForm } from "@/features/auth/login/ui/FormInputOTP"
-import { HomePage } from "@/pages/home/ui/HomePage"
 import { AuthRedirect } from "./AuthRedirect"
-import InputEmail from "@/pages/inputEmail/index"
+
+const RegisterPage = React.lazy(() => import("@/pages/register/ui/RegisterPage").then(module => ({ default: module.RegisterPage })))
+const LoginPage = React.lazy(() => import("@/pages/login/ui/LoginPage").then(module => ({ default: module.LoginPage })))
+const HomePage = React.lazy(() => import("@/pages/home/ui/HomePage").then(module => ({ default: module.HomePage })))
+const InputOTPForm = React.lazy(() => import("@/features/auth/login/ui/FormInputOTP").then(module => ({ default: module.InputOTPForm })))
+const InputEmail = React.lazy(() => import("@/pages/changePassword/ui/inputEmail").then(module => ({ default: module.InputEmail })))
+const InputOTPChangePassword = React.lazy(() => import("@/pages/changePassword/ui/inputOTP").then(module => ({ default: module.InputOTPChangePassword })))
+const ChangePassword = React.lazy(() => import("@/pages/changePassword/ui/changePassword").then(module => ({ default: module.ChangePassword })))
 
 export function AppRoutes() {
     return (
         <Routes>
             <Route path="/" element={
                 <AuthRedirect>
-                    <LoginPage />
+                    <React.Suspense fallback={<div>Loading...</div>}>
+                        <LoginPage />
+                    </React.Suspense>
                 </AuthRedirect>
             }></Route>
             <Route path="/register" element={
                 <AuthRedirect>
+                    <React.Suspense fallback={<div className="min-h-screen flex items-center justify-center">
+                        <div className="text-center">
+                            <h1 className="text-6xl font-bold">Loading...</h1>
+                        </div>
+                    </div>}>
                     <RegisterPage />
+                    </React.Suspense>
                 </AuthRedirect>
             }></Route>
             <Route path="/input-otp" element={
                 <AuthRedirect>
-                    <InputOTPForm />
+                    <React.Suspense fallback={<div>Loading...</div>}>
+                        <InputOTPForm />
+                    </React.Suspense>
                 </AuthRedirect>
             }></Route>
             <Route path="/home" element={
                 <AuthRedirect>
-                    <HomePage />
+                    <React.Suspense fallback={<div>Loading...</div>}>
+                        <HomePage />
+                    </React.Suspense>
                 </AuthRedirect>
             }></Route>
             <Route path="/forgot-password" element={
-                <InputEmail />
+                <React.Suspense fallback={<div>Loading...</div>}>
+                    <InputEmail />
+                </React.Suspense>
             }></Route>
-            
+            <Route path="/verify-otp" element={
+                <React.Suspense fallback={<div>Loading...</div>}>
+                    <InputOTPChangePassword />
+                </React.Suspense>
+            }></Route>
+            <Route path="/change-password" element={
+                <React.Suspense fallback={<div>Loading...</div>}>
+                    <ChangePassword />
+                </React.Suspense>
+            }></Route>
             {/* 404 */}
             <Route path="*" element={
                  <div className="min-h-screen flex items-center justify-center">

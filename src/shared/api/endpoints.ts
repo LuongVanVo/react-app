@@ -7,7 +7,8 @@ export const API_ENDPOINTS = {
     RENEW_TOKEN: "/auth/renew-token",
     CHECK_AUTH: "/auth/check-auth",
     FORGOT_PASSWORD: "/auth/forgot-password",
-    RESET_PASSWORD: "/auth/reset-password",
+    VERIFY_OTP: "/auth/verify-otp",
+    CHANGE_PASSWORD: "/auth/change-password",
   },
   HOME: {},
   USER: {
