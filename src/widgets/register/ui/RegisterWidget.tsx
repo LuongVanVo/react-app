@@ -1,4 +1,4 @@
-import { RegisterForm } from "@/features/auth/login/ui/RegisterForm"
+import { RegisterForm } from "@/features/auth/login/index"
 
 export function RegisterWidget() {
     return (
