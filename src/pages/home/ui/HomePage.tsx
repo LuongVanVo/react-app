@@ -1,11 +1,11 @@
-import { HomeWidget } from "@/widgets/home/ui/HomeWidget";
-import { UserWidget } from "@/widgets/home/ui/UserWidget";
+import { SideBar } from "@/shared/ui/SideBar/index";
+import { HomeWidget } from "@/widgets/home/index";
 
 export function HomePage() {
     return (
-        <div className="container mx-auto px-4 py-8">
+        <div className="flex">
+            <SideBar />
             <HomeWidget />
-            <UserWidget />
         </div>
     )
 }

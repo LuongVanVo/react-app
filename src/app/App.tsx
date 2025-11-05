@@ -3,7 +3,7 @@ import { AppRoutes } from "./router/index";
 
 function App() {
   return (
-    <BrowserRouter basename="/react-app">
+    <BrowserRouter basename="/react-app/">
       <AppRoutes />
     </BrowserRouter>
   )
