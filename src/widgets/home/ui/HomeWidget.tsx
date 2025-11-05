@@ -1,40 +1,59 @@
-import { useAuth } from "@/features/auth/login/model/useAuth";
-import type { ApiError } from "@/features/auth/login/api/type";
-    
+import { FaBriefcase } from "react-icons/fa";
+import { BsPeople } from "react-icons/bs";
+import { DialogNewWorkspace, DialogNewBoard } from "../components/dialog/index";
+
 export function HomeWidget() {
-    const { logout } = useAuth();
-    const handleLogout = async () => {
-        try {
-            await logout();
-        } catch (err) {
-            const apiError = err as ApiError;
-            alert(apiError.message);
-        }
-    };
     return (
-        <div className="container mx-auto px-4 py-8">
+        <div className="flex-1 overflow-y-auto">
             {/* Header */}
-            <header className="flex justify-between items-center mb-8 bg-white rounded-lg shadow p-6">
-                <h1 className="text-3xl font-bold text-gray-800">Home</h1>
-                <button
-                    onClick={ handleLogout }
-                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors"
-                >
-                    Logout
-                </button>
-            </header>
+            <div className="p-4 border-gray-200">
+                <div className="border-gray-200 flex">
+                    <h1 className="text-lg font-medium mx-4">Dashboard</h1>
+                </div>
+            </div>
+            <div className="w-full h-px bg-gray-200 my-2"></div>
 
             {/* Main Content */}
-            <main className="bg-white rounded-lg shadow p-8">
-                <div className="text-center">
-                    <h2 className="text-2xl font-semibold text-gray-700 mb-4">
-                        Welcome to Home Page!
-                    </h2>
-                    <p className="text-gray-600 mb-6">
-                        You have successfully logged in.
-                    </p>
+            <div className="px-8 py-4">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h1 className="text-3xl font-bold">Dashboard</h1>
+                        <p className="text-gray-500">Manage your workspaces and boards</p>
+                    </div>
+                    <DialogNewWorkspace />
                 </div>
-            </main>
+            </div>
+
+            <div className="px-8">
+                <div className="flex items-center justify-between py-4">
+                    <div className="flex flex-col gap-1">
+                        <div className="flex items-center ">
+                            <FaBriefcase className="mr-2 w-6 h-6" />
+                            <div className="text-lg font-semibold">Company Workspace</div>
+                        </div>
+                        <div className="text-sm text-gray-500">Main company workspace</div>
+                        <div className="text-sm text-gray-500">2 boards</div>
+                    </div>
+                    <DialogNewBoard />
+                </div>
+
+            {/* All boards */}
+                <div className="flex flex-wrap gap-4">
+                    <div className="flex flex-col gap-2 border border-gray-200 shadow-sm rounded-lg p-5 w-1/4 hover:shadow-md transition-all duration-300 cursor-pointer">
+                        <div className="flex items-center gap-2">
+                            <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 3v14"></path><path d="M12 3v8"></path><path d="M19 3v18"></path></svg>
+                            <div className="text-md font-semibold">Project Alpha</div>
+                        </div>
+                        <div className="text-sm text-gray-500">Main project board</div>
+                        <div className="flex items-center justify-between">
+                            <div className="text-sm text-gray-500">3 lists</div>
+                            <div className="flex items-center gap-1 text-gray-500"><BsPeople className="w-4 h-4" />2</div>
+                        </div>
+                    </div>
+
+                    
+                </div>
+            </div>
         </div>
     )
 }
