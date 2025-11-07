@@ -49,10 +49,9 @@ export const authApi = {
     );
   },
 
-  checkAuth: async (): Promise<boolean> => {
-    const response = await fetchFactory.get<boolean>(AuthEndpoint.CHECK_AUTH, {
+  checkMe: (): Promise<boolean> => {
+    return fetchFactory.get<boolean>(AuthEndpoint.CHECK_ME, {
       withCredentials: true,
     });
-    return response;
   },
 };

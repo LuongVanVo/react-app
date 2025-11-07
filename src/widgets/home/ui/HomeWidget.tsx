@@ -1,8 +1,28 @@
 import { FaBriefcase } from "react-icons/fa";
 import { BsPeople } from "react-icons/bs";
 import { DialogNewWorkspace, DialogNewBoard } from "../components/dialog/index";
+import { useProject } from "@/features/projects/model/useProject";
+import type { ApiError } from "@/features/auth/login/api/type";
+import type { Project } from "@/features/projects/api/type";
+import { useEffect, useState } from "react";
 
 export function HomeWidget() {
+    const { getAllProjectsOfUser } = useProject();
+    const [projects, setProjects] = useState<Project[]>([]);
+    useEffect(() => {
+        handleGetAllProjectsOfUser();
+    }, []);
+    const handleGetAllProjectsOfUser = async () => {
+        try {
+            const data = await getAllProjectsOfUser();
+            setProjects(data);
+        } catch (err) {
+            const apiError = err as ApiError;
+            alert(apiError.message);
+            setProjects([]);
+        }
+    }
+
     return (
         <div className="flex-1 overflow-y-auto">
             {/* Header */}
@@ -24,36 +44,69 @@ export function HomeWidget() {
                 </div>
             </div>
 
-            <div className="px-8">
-                <div className="flex items-center justify-between py-4">
-                    <div className="flex flex-col gap-1">
-                        <div className="flex items-center ">
-                            <FaBriefcase className="mr-2 w-6 h-6" />
-                            <div className="text-lg font-semibold">Company Workspace</div>
+            
+            {(
+                projects.map((project) => (
+                    <div key={project.id} className="px-8 mb-8">
+                        {/* Project Header */}
+                        <div className="flex items-center justify-between py-4">
+                            <div className="flex flex-col gap-1">
+                                <div className="flex items-center">
+                                    <FaBriefcase className="mr-2 w-6 h-6" />
+                                    <div className="text-lg font-semibold">{project.name}</div>
+                                </div>
+                                <div className="text-sm text-gray-500">{project.description}</div>
+                                <div className="text-sm text-gray-500">{project?.boards.length} boards</div>
+                            </div>
+                            <DialogNewBoard />
                         </div>
-                        <div className="text-sm text-gray-500">Main company workspace</div>
-                        <div className="text-sm text-gray-500">2 boards</div>
-                    </div>
-                    <DialogNewBoard />
-                </div>
 
-            {/* All boards */}
-                <div className="flex flex-wrap gap-4">
-                    <div className="flex flex-col gap-2 border border-gray-200 shadow-sm rounded-lg p-5 w-1/4 hover:shadow-md transition-all duration-300 cursor-pointer">
-                        <div className="flex items-center gap-2">
-                            <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 3v14"></path><path d="M12 3v8"></path><path d="M19 3v18"></path></svg>
-                            <div className="text-md font-semibold">Project Alpha</div>
-                        </div>
-                        <div className="text-sm text-gray-500">Main project board</div>
-                        <div className="flex items-center justify-between">
-                            <div className="text-sm text-gray-500">3 lists</div>
-                            <div className="flex items-center gap-1 text-gray-500"><BsPeople className="w-4 h-4" />2</div>
+                        <div className="flex flex-wrap gap-4">
+                            {project?.boards.length === 0 ? (
+                                <div className="text-sm text-gray-500 py-2">
+                                    No boards yet. Create a new board to get started!
+                                </div>
+                            ) : (
+                                project?.boards.map((board) => (
+                                    <div 
+                                        key={board?.id}
+                                        className="flex flex-col gap-2 border border-gray-200 shadow-sm rounded-lg p-5 w-1/4 hover:shadow-md transition-all duration-300 cursor-pointer"
+                                    >
+                                        <div className="flex items-center gap-2">
+                                            <svg 
+                                                className="w-4 h-4" 
+                                                xmlns="http://www.w3.org/2000/svg" 
+                                                width="24" 
+                                                height="24" 
+                                                viewBox="0 0 24 24" 
+                                                fill="none" 
+                                                stroke="currentColor" 
+                                                strokeWidth="2" 
+                                                strokeLinecap="round" 
+                                                strokeLinejoin="round" 
+                                                aria-hidden="true"
+                                            >
+                                                <path d="M5 3v14"></path>
+                                                <path d="M12 3v8"></path>
+                                                <path d="M19 3v18"></path>
+                                            </svg>
+                                            <div className="text-md font-semibold">{board.name}</div>
+                                        </div>
+                                        <div className="text-sm text-gray-500">{board?.name}</div>
+                                        <div className="flex items-center justify-between">
+                                            <div className="text-sm text-gray-500">3 tasks</div>
+                                            <div className="flex items-center gap-1 text-gray-500">
+                                                <BsPeople className="w-4 h-4" />
+                                                3
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
                         </div>
                     </div>
-
-                    
-                </div>
-            </div>
+                ))
+            )}
         </div>
     )
 }

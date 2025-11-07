@@ -75,6 +75,16 @@ export const useAuth = () => {
     }
   };
 
+  const checkMe = async () => {
+    try {
+      const response = await authApi.checkMe();
+      return response;
+    } catch (error) {
+      const apiError = error as ApiError;
+      throw apiError;
+    }
+  };
+
   return {
     isLoading,
     login,
@@ -82,5 +92,6 @@ export const useAuth = () => {
     register,
     verifyOTP,
     logout,
+    checkMe,
   };
 };

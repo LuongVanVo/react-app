@@ -1,8 +1,10 @@
 import { useAuth } from "@/features/auth/login/model/useAuth";
 import { Menu, Transition } from "@headlessui/react"
-import { Fragment } from "react"
+import { Fragment, useEffect, useState } from "react"
 import { FiLogOut, FiUser, FiSettings } from "react-icons/fi";
 import type { ApiError } from "@/features/auth/login/api/type";
+import { userApi } from "@/features/home/api/userApi";
+import conKhiImg from "@/shared/assets/img/conKhi.jpg";
 
 interface User {
     name: string;
@@ -10,8 +12,9 @@ interface User {
     avatar_url: string;
 }
 
-export function UserProfileMenu({ user }: { user: User }) {
+export function UserProfileMenu() {
     const { logout } = useAuth();
+    const [userData, setUserData] = useState<User | null>(null);
     const handleLogout = async () => {
         try {
             await logout();
@@ -20,6 +23,23 @@ export function UserProfileMenu({ user }: { user: User }) {
             alert(apiError.message);
         }
     }
+
+    const getUserById = async () => {
+      try {
+        const response = await userApi.getUserById();
+        if (!response) throw new Error("Failed to get user by id");
+        setUserData(response);
+      } catch (error) {
+        const apiError = error as ApiError;
+        alert(apiError.message);
+        setUserData(null);
+      }
+    }
+    
+    useEffect(() => {
+      getUserById();
+    }, []);
+
     return (
         <Menu as="div" className="relative p-4 border-gray-200 hover:bg-gray-100 transition-colors rounded-lg m-1">
                 <Menu.Button className="w-full border-none outline-none">
@@ -27,13 +47,13 @@ export function UserProfileMenu({ user }: { user: User }) {
                     <div className="flex items-center gap-2 w-full"> 
                         {/* 1. Avatar */}
                         <div className="w-8 h-8 rounded-md bg-gray-200">
-                            <img src={user.avatar_url} alt="avatar" className="w-full h-full object-cover rounded-lg" />
+                            <img src={userData?.avatar_url || conKhiImg} alt="avatar" className="w-full h-full object-cover rounded-lg" />
                         </div>
                         
                         {/* 2. Tex */}
                         <div className="flex flex-col items-start">
-                            <div className="text-sm font-medium select-none">{user.name}</div>
-                            <div className="text-xs select-none">{user.email}</div>
+                            <div className="text-sm font-medium select-none">{userData?.name}</div>
+                            <div className="text-xs select-none">{userData?.email}</div>
                         </div>
                     </div>
                 </Menu.Button>
@@ -53,12 +73,12 @@ export function UserProfileMenu({ user }: { user: User }) {
                 <div className="flex  items-center gap-2 p-2">
                     {/* avatar */}
                     <div className="w-8 h-8 rounded-md bg-gray-200">
-                        <img src={user.avatar_url} alt="avatar" className="w-full h-full object-cover rounded-lg" />
+                        <img src={userData?.avatar_url || conKhiImg} alt="avatar" className="w-full h-full object-cover rounded-lg" />
                     </div>
                     {/* name */}
                     <div className="flex flex-col items-start">
-                        <div className="text-sm font-medium select-none">{user.name}</div>
-                        <div className="text-xs select-none">{user.email}</div>
+                        <div className="text-sm font-medium select-none">{userData?.name}</div>
+                        <div className="text-xs select-none">{userData?.email}</div>
                     </div>
                 </div>
             </div>

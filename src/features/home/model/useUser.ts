@@ -14,7 +14,20 @@ export const useUser = () => {
     }
   };
 
+  const getUserById = async () => {
+    try {
+      const response = await userApi.getUserById();
+      if (!response) throw new Error("Failed to get user by id");
+      return response;
+    } catch (err) {
+      const apiError = err as ApiError;
+      alert(apiError.message);
+      return null;
+    }
+  };
+
   return {
     getAllUsers,
+    getUserById,
   };
 };
