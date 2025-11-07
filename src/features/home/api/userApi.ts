@@ -6,4 +6,8 @@ export const userApi = {
   getAllUsers: (): Promise<User[]> => {
     return fetchFactory.get<User[]>(UserEndpoint.GET_ALL_USERS);
   },
+
+  getUserById: (): Promise<User> => {
+    return fetchFactory.get<User>(UserEndpoint.GET_USER_BY_ID);
+  },
 };

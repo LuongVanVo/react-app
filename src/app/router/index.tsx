@@ -1,6 +1,7 @@
 import React from "react"
 import { Route, Routes } from "react-router-dom"
-import { AuthRedirect } from "./AuthRedirect"
+import { AuthRedirect } from "./AuthRediect"
+import { AuthGuard } from "./AuthGuard"
 
 const RegisterPage = React.lazy(() => import("@/pages/register/ui/RegisterPage").then(module => ({ default: module.RegisterPage })))
 const LoginPage = React.lazy(() => import("@/pages/login/ui/LoginPage").then(module => ({ default: module.LoginPage })))
@@ -15,10 +16,10 @@ export function AppRoutes() {
         <Routes>
             <Route path="/" element={
                 <AuthRedirect>
-                    <React.Suspense fallback={<div>Loading...</div>}>
+                <React.Suspense fallback>
                         <LoginPage />
-                    </React.Suspense>
-                </AuthRedirect>
+                </React.Suspense>
+                    </AuthRedirect>
             }></Route>
             <Route path="/register" element={
                 <AuthRedirect>
@@ -32,18 +33,16 @@ export function AppRoutes() {
                 </AuthRedirect>
             }></Route>
             <Route path="/input-otp" element={
-                <AuthRedirect>
                     <React.Suspense fallback={<div>Loading...</div>}>
                         <InputOTPForm />
                     </React.Suspense>
-                </AuthRedirect>
             }></Route>
             <Route path="/home" element={
-                <AuthRedirect>
+                <AuthGuard>
                     <React.Suspense fallback={<div>Loading...</div>}>
                         <HomePage />
                     </React.Suspense>
-                </AuthRedirect>
+                </AuthGuard>
             }></Route>
             <Route path="/forgot-password" element={
                 <React.Suspense fallback={<div>Loading...</div>}>

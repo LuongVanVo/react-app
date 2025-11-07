@@ -9,12 +9,18 @@ export const API_ENDPOINTS = {
     FORGOT_PASSWORD: "/auth/forgot-password",
     VERIFY_OTP: "/auth/verify-otp",
     CHANGE_PASSWORD: "/auth/change-password",
+    CHECK_ME: "/auth/me",
   },
   HOME: {},
   USER: {
     GET_ALL_USERS: "/users/",
+    GET_USER_BY_ID: "/users/id",
+  },
+  PROJECT: {
+    GET_ALL_PROJECTS_OF_WORKSPACE: "/projects/projects-of-member",
   },
 };
 
 export const AuthEndpoint = API_ENDPOINTS.AUTH;
 export const UserEndpoint = API_ENDPOINTS.USER;
+export const ProjectEndpoint = API_ENDPOINTS.PROJECT;

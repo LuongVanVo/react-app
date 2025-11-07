@@ -11,6 +11,7 @@ export const apiClient = axios.create({
 });
 
 let isRefreshing = false;
+let isLoggingOut = false;
 let failedRequests: { resolve: () => void; reject: (err: any) => void }[] = [];
 
 const processQueue = (error: any) => {
@@ -19,6 +20,14 @@ const processQueue = (error: any) => {
     else prom.resolve();
   });
   failedRequests = [];
+};
+
+export const setLoggingOut = (value: boolean) => {
+  isLoggingOut = value;
+  if (value) {
+    processQueue(new Error("Logging out"));
+    isRefreshing = false;
+  }
 };
 
 apiClient.interceptors.response.use(
@@ -32,14 +41,18 @@ apiClient.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    // Nếu refresh Token hết hạn thì logout
-    if (originalRequest.url?.includes(AuthEndpoint.RENEW_TOKEN)) {
-      window.location.href = "/";
+    if (isLoggingOut) {
+      return Promise.reject(error);
+    }
+
+    if (
+      originalRequest.url?.includes(AuthEndpoint.LOGOUT) ||
+      originalRequest.url?.includes(AuthEndpoint.RENEW_TOKEN)
+    ) {
       return Promise.reject(error);
     }
 
     if (originalRequest._retry) {
-      window.location.href = "/";
       return Promise.reject(error);
     }
 
@@ -71,8 +84,6 @@ apiClient.interceptors.response.use(
       return apiClient(originalRequest);
     } catch (err: any) {
       processQueue(err);
-
-      window.location.href = "/";
       return Promise.reject(err);
     } finally {
       isRefreshing = false;
