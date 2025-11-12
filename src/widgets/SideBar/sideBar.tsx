@@ -1,4 +1,4 @@
-import { UserProfileMenu, InfoWorkspace } from "@/shared/ui/SideBar/components/index";
+import { UserProfileMenu, InfoWorkspace } from "@/widgets/SideBar/components/index";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 

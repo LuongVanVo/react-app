@@ -28,6 +28,7 @@ function LoginForm({
       const response = await login({ email, password });
       if (response) {
         navigate("/home");
+        // alert('Login successfully !!')
       }
     } catch (err) {
       const apiError = err as ApiError;
