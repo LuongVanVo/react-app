@@ -4,12 +4,12 @@ export const API_ENDPOINTS = {
     REGISTER: "/auth/register",
     VERIFY_EMAIL: "/auth/verify-email",
     LOGOUT: "/auth/logout",
-    RENEW_TOKEN: "/auth/renew-token",
+    RENEW_TOKEN: "/auth/ refresh",
     CHECK_AUTH: "/auth/check-auth",
     FORGOT_PASSWORD: "/auth/forgot-password",
     VERIFY_OTP: "/auth/verify-otp",
     CHANGE_PASSWORD: "/auth/change-password",
-    CHECK_ME: "/auth/me",
+    CHECK_ME: "/users/me",
   },
   HOME: {},
   USER: {
@@ -17,7 +17,8 @@ export const API_ENDPOINTS = {
     GET_USER_BY_ID: "/users/id",
   },
   PROJECT: {
-    GET_ALL_PROJECTS_OF_WORKSPACE: "/projects/projects-of-member",
+    GET_ALL_PROJECTS_OF_WORKSPACE: "/api/workspaces/my-workspaces",
+    CREATE_WORKSPACE: "/api/workspaces/",
   },
 };
 
