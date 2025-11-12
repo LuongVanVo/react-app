@@ -7,9 +7,10 @@ import { userApi } from "@/features/home/api/userApi";
 import conKhiImg from "@/shared/assets/img/conKhi.jpg";
 
 interface User {
+    id: number;
     name: string;
     email: string;
-    avatar_url: string;
+    avatar_url: string | null;
 }
 
 export function UserProfileMenu() {

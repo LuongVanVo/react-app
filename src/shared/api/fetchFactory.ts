@@ -18,7 +18,7 @@ export const fetchFactory = {
   get: async <T>(url: string, config?: AxiosRequestConfig): Promise<T> => {
     try {
       const response = await apiClient.get<BackendResponse<T>>(url, config);
-      return response.data.metadata as T;
+      return response.data as T;
     } catch (error: any) {
       throw {
         message:

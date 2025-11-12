@@ -5,8 +5,11 @@ import { useProject } from "@/features/projects/model/useProject";
 import type { ApiError } from "@/features/auth/login/api/type";
 import type { Project } from "@/features/projects/api/type";
 import { useEffect, useState } from "react";
+import { BoardOptionsMenu } from "../components/BoardOptionsMenu";
+import { useBoardContext } from "../components/context/BoardContext";
 
 export function HomeWidget() {
+    const { boards } = useBoardContext();
     const { getAllProjectsOfUser } = useProject();
     const [projects, setProjects] = useState<Project[]>([]);
     useEffect(() => {
@@ -22,9 +25,9 @@ export function HomeWidget() {
             setProjects([]);
         }
     }
-
     return (
         <div className="flex-1 overflow-y-auto">
+            <DialogNewBoard mode="edit" />
             {/* Header */}
             <div className="p-4 border-gray-200">
                 <div className="border-gray-200 flex">
@@ -46,6 +49,7 @@ export function HomeWidget() {
 
             
             {(
+                projects.length > 0 ? (
                 projects.map((project) => (
                     <div key={project.id} className="px-8 mb-8">
                         {/* Project Header */}
@@ -56,12 +60,53 @@ export function HomeWidget() {
                                     <div className="text-lg font-semibold">{project.name}</div>
                                 </div>
                                 <div className="text-sm text-gray-500">{project.description}</div>
-                                <div className="text-sm text-gray-500">{project?.boards.length} boards</div>
+                                {/* <div className="text-sm text-gray-500">{project?.boards.length} boards</div> */}
                             </div>
-                            <DialogNewBoard />
+                            <DialogNewBoard headerTitle="Create New Board" headerDescription="Create a new board to organize your project tasks and collaborate with your team." />
                         </div>
-
                         <div className="flex flex-wrap gap-4">
+                        {/* Dữ liệu tĩnh tạm thời cho demo */}
+                        {boards.map((board) => (
+                            <div 
+                                key={board.id}
+                                className="group flex flex-col gap-2 border border-gray-200 shadow-sm rounded-lg p-5 w-[calc(25%-12px)] hover:shadow-md transition-all duration-300 cursor-pointer"
+                            >
+                                
+                                <div className="flex items-center gap-2">
+                                    <svg 
+                                        className="w-4 h-4 text-blue-600" 
+                                        xmlns="http://www.w3.org/2000/svg" 
+                                        width="24" 
+                                        height="24" 
+                                        viewBox="0 0 24 24" 
+                                        fill="none" 
+                                        stroke="currentColor" 
+                                        strokeWidth="2" 
+                                        strokeLinecap="round" 
+                                        strokeLinejoin="round" 
+                                        aria-hidden="true"
+                                    >
+                                        <path d="M5 3v14"></path>
+                                        <path d="M12 3v8"></path>
+                                        <path d="M19 3v18"></path>
+                                    </svg>
+                                    <div className="text-md font-semibold text-gray-900">{board.name}</div>
+                                        <BoardOptionsMenu boardId={board.id} />
+                                </div>
+                                <div className="text-sm text-gray-500">{board.description}</div>
+                                <div className="flex items-center justify-between mt-2">
+                                    <div className="text-sm text-gray-500">
+                                        {board.tasksCount} {board.tasksCount === 1 ? 'task' : 'tasks'}
+                                    </div>
+                                    <div className="flex items-center gap-1 text-gray-500">
+                                        <BsPeople className="w-4 h-4 text-gray-500" />
+                                        <span className="text-sm">{board.membersCount}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                        {/* <div className="flex flex-wrap gap-4">
                             {project?.boards.length === 0 ? (
                                 <div className="text-sm text-gray-500 py-2">
                                     No boards yet. Create a new board to get started!
@@ -103,10 +148,14 @@ export function HomeWidget() {
                                     </div>
                                 ))
                             )}
-                        </div>
+                        </div> */}
                     </div>
                 ))
-            )}
+            ) : (
+                <div className="text-sm text-gray-500 py-2 flex justify-center items-center ">
+                    No projects yet. Create a new project to get started!
+                </div>
+            ))}
         </div>
     )
 }
