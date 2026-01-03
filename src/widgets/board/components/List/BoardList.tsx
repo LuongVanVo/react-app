@@ -99,7 +99,7 @@ export function BoardList({ list }: BoardListProps) {
             setIsDeleting(true);
             
             try {
-                await fetchDeleteListFromBoard({ boardId: list.board_id, listId: list.id });
+                await fetchDeleteListFromBoard({ boardId: list.board_id, listId: list.id, archived: true });
             } catch (err) {
                 console.error(`Failed to delete list: ${err}`);
                 throw err;
