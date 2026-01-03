@@ -12,19 +12,31 @@ interface BoardListProps {
 export function BoardList({ list }: BoardListProps) {
     const [isAddingItem, setIsAddingItem] = useState(false);
     const [itemTitle, setItemTitle] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
 
     // get cards from CardDetailProvider
-    const { cards } = useCardDetailContext();
+    const { cards, fetchCreateCard, addCardToState } = useCardDetailContext();
 
     const cardsInList = useMemo(() => {
-        return cards.filter(card => card.list_id === list.id);
+        return cards.filter(card => card && card.list_id === list.id);
     }, [cards, list.id]);
 
-    const handleAddItem = () => {   
-        if (itemTitle.trim()) {
-            console.log("Add item:", itemTitle);
+    const handleAddCard = async () => {   
+        if (!itemTitle.trim() || isSubmitting) return;
+        setIsSubmitting(true);
+
+        try {
+            const newCard = await fetchCreateCard({ title: itemTitle, list_id: list.id });
+            if (!newCard) throw new Error("Failed to create card");
             setItemTitle("");
             setIsAddingItem(false);
+            addCardToState(newCard.card || newCard);
+        } catch (err) {
+            console.error(`Failed to create card: ${err}`);
+            throw err;
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -78,11 +90,7 @@ export function BoardList({ list }: BoardListProps) {
                             card={card}
                         />
                     ))
-                ) : (
-                    <div className="text-center py-6 text-gray-400 text-xs">
-                        No cards yet
-                    </div>
-                )}
+                ) : null}
             </div>
 
             {/* Add Item Section */}
@@ -97,13 +105,13 @@ export function BoardList({ list }: BoardListProps) {
                             className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-0 shadow-sm hover:shadow-md transition-shadow"
                             autoFocus
                             onKeyDown={(e) => {
-                                if (e.key === "Enter") handleAddItem();
+                                if (e.key === "Enter") handleAddCard();
                                 if (e.key === "Escape") setIsAddingItem(false);
                             }}
                         />
                         <div className="flex items-center gap-2">
                             <button
-                                onClick={handleAddItem}
+                                onClick={handleAddCard}
                                 className="px-3 py-1.5 bg-black text-white text-sm rounded-md hover:bg-gray-800 transition-colors cursor-pointer font-semibold"
                             >
                                 Add Card

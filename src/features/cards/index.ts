@@ -4,4 +4,6 @@ export type {
   GetAllCardsOfBoardRequest,
   GetAllCardsOfBoardResponse,
   ListItem,
+  CreateCardRequest,
+  CreateCardResponse,
 } from "./api/type";

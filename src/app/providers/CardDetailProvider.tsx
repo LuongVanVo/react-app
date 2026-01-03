@@ -1,4 +1,4 @@
-import { type Card, type GetAllCardsOfBoardResponse, type GetAllCardsOfBoardRequest, useCards } from "@/features/cards/index";
+import { type Card, type GetAllCardsOfBoardResponse, type GetAllCardsOfBoardRequest, useCards, type CreateCardRequest, type CreateCardResponse } from "@/features/cards/index";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -10,6 +10,8 @@ interface CardDetailContextType {
 
     // Functions
     getAllCardsOfBoard: (request: GetAllCardsOfBoardRequest) => Promise<GetAllCardsOfBoardResponse>;
+    fetchCreateCard: (request: CreateCardRequest) => Promise<CreateCardResponse>;
+    addCardToState: (card: Card) => void;
 }
 
 const CardDetailContext = createContext<CardDetailContextType | undefined>(undefined);
@@ -20,7 +22,7 @@ export function CardDetailProvider({ children }: { children: React.ReactNode }) 
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const { getAllCardsOfBoard } = useCards();
+    const { getAllCardsOfBoard, createCard } = useCards();
 
     // get data from api
     useEffect(() => {
@@ -55,11 +57,30 @@ export function CardDetailProvider({ children }: { children: React.ReactNode }) 
         }
     }
 
+    // create card
+    const fetchCreateCard = async (request: CreateCardRequest) : Promise<CreateCardResponse> => {
+        try {
+            const data = await createCard(request);
+            if (!data) throw new Error("Failed to create card");
+            return data;
+        } catch (err) {
+            setError("Failed to create card");
+            console.error(`Failed to create card: ${err}`);
+            throw err;
+        }
+    }
+
+    const addCardToState = (card: Card) => {
+        setCards(prevCards => [...prevCards, card]);
+    }
+
     const value: CardDetailContextType = {
         cards,
         isLoading,
         error,
         getAllCardsOfBoard,
+        fetchCreateCard,
+        addCardToState
     }
 
     return (

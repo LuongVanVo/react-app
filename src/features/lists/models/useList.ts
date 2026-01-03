@@ -1,5 +1,7 @@
 import type { ApiError } from "@/shared/api/fetchFactory";
 import type {
+  CreateListRequest,
+  CreateListResponse,
   GetAllListofBoardRequest,
   GetAllListofBoardResponse,
 } from "../api/type";
@@ -21,7 +23,23 @@ export const useLists = () => {
     }
   };
 
+  // create list
+  const createList = async (
+    request: CreateListRequest,
+  ): Promise<CreateListResponse> => {
+    try {
+      const data = await listApi.createList(request);
+      if (!data) throw new Error("Failed to create list");
+      return data;
+    } catch (err) {
+      const apiError = err as ApiError;
+      console.error(`Failed to create list: ${apiError.message}`);
+      throw apiError;
+    }
+  };
+
   return {
     getAllListsOfBoard,
+    createList,
   };
 };
