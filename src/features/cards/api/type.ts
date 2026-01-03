@@ -39,3 +39,13 @@ export interface GetAllCardsOfBoardRequest {
 export interface GetAllCardsOfBoardResponse {
   cards: Card[];
 }
+
+export interface CreateCardRequest {
+  title: string;
+  description?: string;
+  list_id: string;
+}
+
+export interface CreateCardResponse {
+  card: Card;
+}

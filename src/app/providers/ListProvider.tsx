@@ -1,4 +1,4 @@
-import { type GetAllListofBoardResponse, type GetAllListofBoardRequest, type List, useLists } from "@/features/lists/index";
+import { type GetAllListofBoardResponse, type GetAllListofBoardRequest, type List, useLists, type CreateListRequest, type CreateListResponse } from "@/features/lists/index";
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { createContext } from "react";
@@ -11,6 +11,8 @@ interface ListContextType {
 
     // Functions
     getAllListsOfBoard: (request: GetAllListofBoardRequest) => Promise<GetAllListofBoardResponse>;
+    fetchCreateList: (request: CreateListRequest) => Promise<CreateListResponse>;
+    addListToState: (list: List) => void;
 }
 
 const ListContext = createContext<ListContextType | undefined>(undefined);
@@ -21,7 +23,7 @@ export function ListProvider({ children }: { children: React.ReactNode }) {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const { getAllListsOfBoard } = useLists();
+    const { getAllListsOfBoard, createList } = useLists();
 
     // get data from api
     useEffect(() => {
@@ -45,11 +47,30 @@ export function ListProvider({ children }: { children: React.ReactNode }) {
         }
     }
 
+    const fetchCreateList = async (request: CreateListRequest) : Promise<CreateListResponse> => {
+        try {
+            const data = await createList(request);
+            if (!data) throw new Error("Failed to create list");
+            return data;
+        }
+        catch (err) {
+            setError("Failed to create list");
+            console.error(`Failed to create list: ${err}`);
+            throw err;
+        }
+    }
+
+    const addListToState = (list: List) => {
+        setList(prevList => [...prevList, list]);
+    }
+
     const value : ListContextType = {
         list, 
         isLoading,
         error,
         getAllListsOfBoard,
+        fetchCreateList,
+        addListToState,
     }
 
     return (

@@ -3,12 +3,14 @@ import { Button } from "@/shared/ui/button";
 import { DropdownMenu, DropdownMenuItem, DropdownMenuContent, DropdownMenuTrigger } from "@/shared/ui/dropdown-menu";
 import React, { useEffect, useRef, useState } from "react";
 import { FiEdit, FiMoreHorizontal, FiUserPlus } from "react-icons/fi";
+import { DialogInviteToBoard } from "../components/Dialog/DialogInviteToBoard";
 
 export function BoardHeader() {
     const { board, updateBoardName } = useBoardDetail();
     const [isEditName, setIsEditName] = useState(false);
     const [boardName, setBoardName] = useState(board?.name || "");
     const inputRef = useRef<HTMLInputElement>(null);
+    const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
 
     // update board name when board name change
     useEffect(() => {
@@ -61,6 +63,11 @@ export function BoardHeader() {
         }
     }
 
+    // handle members invited (callback when members invited)
+    const handleMembersInvited = () => {
+        console.log("members invited");
+    }
+
     if (!board) return null;
 
     return (
@@ -98,7 +105,9 @@ export function BoardHeader() {
             {/* Right side - Actions */}
             <div className="flex items-center gap-10">
                 {/* invite button */}
-                <Button variant="outline" size="sm" className="hover:bg-gray-100 rounded transition-colors cursor-pointer">
+                <Button 
+                    onClick={() => setIsInviteDialogOpen(true)}
+                    variant="outline" size="sm" className="hover:bg-gray-100 rounded transition-colors cursor-pointer">
                     <FiUserPlus className="w-4 h-4" />
                     Invite
                 </Button>
@@ -109,17 +118,28 @@ export function BoardHeader() {
                         <FiMoreHorizontal className="w-4 h-4 mr-2 hover:text-gray-600 transition-colors cursor-pointer" />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" sideOffset={10}>
-                        <DropdownMenuItem className="flex items-center gap-2 hover:bg-gray-100 rounded transition-colors cursor-pointe px-2 py-1.5">
+                        <DropdownMenuItem 
+                            onClick={() => setIsInviteDialogOpen(true)}
+                            className="flex items-center gap-2 hover:bg-gray-100 rounded transition-colors cursor-pointe px-2 py-1.5">
                             <FiUserPlus className="w-4 h-4" />
                             Invite members
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="flex items-center gap-2 hover:bg-gray-100 rounded transition-colors cursor-pointe px-2 py-1.5">
+                        <DropdownMenuItem 
+                            onClick={handleEditName}
+                            className="flex items-center gap-2 hover:bg-gray-100 rounded transition-colors cursor-pointe px-2 py-1.5">
                             <FiEdit className="w-4 h-4" />
                             Rename board
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
+
+            <DialogInviteToBoard
+                isOpen={isInviteDialogOpen}
+                onOpenChange={setIsInviteDialogOpen}
+                boardId={board.id}
+                onMembersInvited={handleMembersInvited}
+            />
 
         </div>
     );

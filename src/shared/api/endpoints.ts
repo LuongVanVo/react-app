@@ -26,12 +26,18 @@ export const API_ENDPOINTS = {
     DELETE_BOARD_FROM_WORKSPACE: "/boards/{boardId}/permanent",
     EDIT_BOARD_IN_WORKSPACE: "/boards/{boardId}",
     GET_BOARD_BY_ID: "/boards/{boardId}",
+    GET_ALL_MEMBER_OF_WORKSPACE_BUT_NOT_IN_BOARD:
+      "/boards/{boardId}/available-members",
+    INVITE_USER_TO_BOARD: "/boards/{boardId}/invitations",
+    ACCEPT_INVITATION_TO_BOARD: "/boards/invitations/{token}/accept",
   },
   CARD: {
     GET_ALL_CARDS_OF_BOARD: "/boards/{boardId}/cards",
+    CREATE_CARD: "/cards",
   },
   LIST: {
     GET_ALL_LISTS_OF_BOARD: "/boards/{boardId}/lists",
+    CREATE_LIST: "boards/{boardId}/lists",
   },
 };
 

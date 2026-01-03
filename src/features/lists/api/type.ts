@@ -21,3 +21,19 @@ export interface GetAllListofBoardResponse {
   position: number;
   cover_img: string;
 }
+
+export interface CreateListRequest {
+  title: string;
+  name: string;
+  board_id: string;
+}
+
+export interface CreateListResponse {
+  id: string;
+  board_id: string;
+  title: string;
+  name: string;
+  archived: boolean;
+  position: number;
+  cover_img: string;
+}

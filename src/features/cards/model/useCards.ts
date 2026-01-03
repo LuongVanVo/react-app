@@ -1,5 +1,7 @@
 import type { ApiError } from "@/shared/api/fetchFactory";
 import type {
+  CreateCardRequest,
+  CreateCardResponse,
   GetAllCardsOfBoardRequest,
   GetAllCardsOfBoardResponse,
 } from "../api/type";
@@ -21,7 +23,22 @@ export const useCards = () => {
     }
   };
 
+  // create card
+  const createCard = async (
+    request: CreateCardRequest,
+  ): Promise<CreateCardResponse> => {
+    try {
+      const data = await cardApi.createCard(request);
+      if (!data) throw new Error("Failed to create card");
+      return data;
+    } catch (err) {
+      const apiError = err as ApiError;
+      console.error(`Failed to create card: ${apiError.message}`);
+      throw apiError;
+    }
+  };
   return {
     getAllCardsOfBoard,
+    createCard,
   };
 };
