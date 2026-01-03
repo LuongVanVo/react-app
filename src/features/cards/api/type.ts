@@ -49,3 +49,21 @@ export interface CreateCardRequest {
 export interface CreateCardResponse {
   card: Card;
 }
+
+export interface DeleteCardRequest {
+  cardId: string;
+}
+
+export interface DeleteCardResponse {
+  card: Card;
+}
+
+export interface UpdateCardRequest {
+  cardId: string;
+  title?: string;
+  description?: string;
+}
+
+export interface UpdateCardResponse {
+  card: Card;
+}

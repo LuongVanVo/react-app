@@ -2,8 +2,10 @@ import type { ApiError } from "@/shared/api/fetchFactory";
 import type {
   CreateListRequest,
   CreateListResponse,
+  DeleteListFromBoardRequest,
   GetAllListofBoardRequest,
   GetAllListofBoardResponse,
+  UpdateNameListRequest,
 } from "../api/type";
 import { listApi } from "../api/listApi";
 
@@ -38,8 +40,32 @@ export const useLists = () => {
     }
   };
 
+  // update name list
+  const updateNameList = async (request: UpdateNameListRequest) => {
+    try {
+      await listApi.updateNameList(request);
+    } catch (err) {
+      const apiError = err as ApiError;
+      console.error(`Failed to update name list: ${apiError.message}`);
+      throw apiError;
+    }
+  };
+
+  // delete list from board (archive)
+  const deleteListFromBoard = async (request: DeleteListFromBoardRequest) => {
+    try {
+      await listApi.deleteListFromBoard(request);
+    } catch (err) {
+      const apiError = err as ApiError;
+      console.error(`Failed to delete list from board: ${apiError.message}`);
+      throw apiError;
+    }
+  };
+
   return {
     getAllListsOfBoard,
     createList,
+    updateNameList,
+    deleteListFromBoard,
   };
 };

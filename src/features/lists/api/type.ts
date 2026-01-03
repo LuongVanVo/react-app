@@ -37,3 +37,15 @@ export interface CreateListResponse {
   position: number;
   cover_img: string;
 }
+
+export interface UpdateNameListRequest {
+  boardId: string;
+  listId: string;
+  name: string;
+}
+
+export interface DeleteListFromBoardRequest {
+  boardId: string;
+  listId: string;
+  archived: boolean;
+}
