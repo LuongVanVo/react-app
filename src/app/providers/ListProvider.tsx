@@ -2,6 +2,7 @@ import { type GetAllListofBoardResponse, type GetAllListofBoardRequest, type Lis
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { createContext } from "react";
+import type { DeleteListFromBoardRequest, UpdateNameListRequest } from "@/features/lists/api/type";
 
 interface ListContextType {
     // State
@@ -13,6 +14,8 @@ interface ListContextType {
     getAllListsOfBoard: (request: GetAllListofBoardRequest) => Promise<GetAllListofBoardResponse>;
     fetchCreateList: (request: CreateListRequest) => Promise<CreateListResponse>;
     addListToState: (list: List) => void;
+    fetchUpdateNameList: (request: UpdateNameListRequest) => void;
+    fetchDeleteListFromBoard: (request: DeleteListFromBoardRequest) => void;
 }
 
 const ListContext = createContext<ListContextType | undefined>(undefined);
@@ -23,7 +26,7 @@ export function ListProvider({ children }: { children: React.ReactNode }) {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const { getAllListsOfBoard, createList } = useLists();
+    const { getAllListsOfBoard, createList, updateNameList, deleteListFromBoard } = useLists();
 
     // get data from api
     useEffect(() => {
@@ -64,6 +67,28 @@ export function ListProvider({ children }: { children: React.ReactNode }) {
         setList(prevList => [...prevList, list]);
     }
 
+    const fetchUpdateNameList = async (request: UpdateNameListRequest) => {
+        try {
+            await updateNameList(request);
+            setList(prevList => prevList.map(l => l.id === request.listId ? { ...l, name: request.name } : l));
+        } catch (err) {
+            setError("Failed to update name list");
+            console.error(`Failed to update name list: ${err}`);
+            throw err;
+        }
+    }
+
+    // delete list archive
+    const fetchDeleteListFromBoard = async (request: DeleteListFromBoardRequest) => {
+        try {
+            await deleteListFromBoard(request);
+            setList(prevList => prevList.filter(l => l.id !== request.listId));
+        } catch (err) {
+            setError("Failed to delete list from board");
+            console.error(`Failed to delete list from board: ${err}`);
+            throw err;
+        }
+    }
     const value : ListContextType = {
         list, 
         isLoading,
@@ -71,6 +96,8 @@ export function ListProvider({ children }: { children: React.ReactNode }) {
         getAllListsOfBoard,
         fetchCreateList,
         addListToState,
+        fetchUpdateNameList,
+        fetchDeleteListFromBoard
     }
 
     return (

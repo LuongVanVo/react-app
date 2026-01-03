@@ -36,7 +36,12 @@ export function BoardProvider({ children }: { children: ReactNode }) {
     const fetchBoardsByWorkspace = async (workspaceId: string) => {
         try {
             const data = await getAllBoardsOfWorkspace(workspaceId);
-            setBoards(data as unknown as Board[]);
+            setBoards(prevBoards => {
+                // Lọc bỏ boards cũ của workspace này
+                const otherBoards = prevBoards.filter(b => b.workspaceId !== workspaceId);
+                // Thêm boards mới vào
+                return [...otherBoards, ...(data as unknown as Board[])];
+            });
         } catch (err) {
             setBoards([]);
         }

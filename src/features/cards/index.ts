@@ -6,4 +6,8 @@ export type {
   ListItem,
   CreateCardRequest,
   CreateCardResponse,
+  DeleteCardRequest,
+  DeleteCardResponse,
+  UpdateCardRequest,
+  UpdateCardResponse,
 } from "./api/type";

@@ -1,9 +1,10 @@
 import { FiEdit, FiMoreHorizontal, FiPlus, FiTrash2 } from "react-icons/fi";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { List } from "@/features/lists/api/type";
 import { useCardDetailContext } from "@/app/providers/CardDetailProvider";
 import { CardInList } from "../Card/CardInList";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/shared/ui/dropdown-menu/dropdown-menu";
+import { useListContext } from "@/app/providers/ListProvider";
 
 interface BoardListProps {
     list: List;
@@ -13,7 +14,60 @@ export function BoardList({ list }: BoardListProps) {
     const [isAddingItem, setIsAddingItem] = useState(false);
     const [itemTitle, setItemTitle] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [listName, setListName] = useState(list.name);
+    const inputRef = useRef<HTMLInputElement>(null);
+    const { fetchUpdateNameList, fetchDeleteListFromBoard } = useListContext();
+    useEffect(() => {
+        if (list?.name) {
+            setListName(list.name);
+        }
+    }, [list?.name]);
 
+    useEffect(() => {
+        if (isEditing && inputRef.current) {
+            inputRef.current.focus();
+            inputRef.current.select();
+        }
+    }, [isEditing]);
+
+    const handleEditName = () => {
+        setIsEditing(true);
+        setListName(list.name);
+    }
+
+    const handleSaveName = async () => {
+        const trimmedName = listName.trim();
+
+        // if nothing changed, return
+        if (!trimmedName || trimmedName === list.name) {
+            setListName(list.name);
+            setIsEditing(false);
+            return;
+        }
+
+        // update list name
+        try {
+            await fetchUpdateNameList({ boardId: list.board_id, listId: list.id, name: trimmedName });
+            setListName(trimmedName);
+            setIsEditing(false);
+        } catch (err) {
+            console.error(`Failed to update list name: ${err}`);
+            setListName(list.name);
+            setIsEditing(false);
+            throw err;
+        }
+    }
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            handleSaveName();
+        } else if (e.key === "Escape") {
+            setListName(list.name);
+            setIsEditing(false);
+        }
+    }
 
     // get cards from CardDetailProvider
     const { cards, fetchCreateCard, addCardToState } = useCardDetailContext();
@@ -40,12 +94,19 @@ export function BoardList({ list }: BoardListProps) {
         }
     };
 
-    const handleRename = () => {
-        console.log("Rename list:", list.id);
-    }
-
-    const handleDelete = () => {
-        console.log("Delete list:", list.id);
+    const handleDelete = async () => {
+        if (confirm("Are you sure you want to delete this list?")) {
+            setIsDeleting(true);
+            
+            try {
+                await fetchDeleteListFromBoard({ boardId: list.board_id, listId: list.id, archived: true });
+            } catch (err) {
+                console.error(`Failed to delete list: ${err}`);
+                throw err;
+            } finally {
+                setIsDeleting(false);
+            }
+        }
     }
 
     return (
@@ -53,7 +114,20 @@ export function BoardList({ list }: BoardListProps) {
             {/* List Header */}
             <div className="flex items-center justify-between p-3 m-4">
                 <h3 className="font-semibold text-sm text-gray-900">
-                    {list.name || list.title}
+                    {isEditing ? (
+                        <input
+                            ref={inputRef}
+                            type="text"
+                            value={listName}
+                            onChange={(e) => setListName(e.target.value)}
+                            onBlur={handleSaveName}
+                            onKeyDown={handleKeyDown}
+                            className="text-sm font-semibold text-gray-900 border px-2 py-1 focus:outline-none bg-white rounded-md"
+                            placeholder="Enter list name..."
+                        />
+                    ) : (
+                        <span onClick={handleEditName} className="text-sm font-semibold text-gray-900 cursor-pointer">{list.name}</span>
+                    )} 
                 </h3>
                 {/* Dropdown Menu */}
                 <DropdownMenu>
@@ -65,7 +139,7 @@ export function BoardList({ list }: BoardListProps) {
                     <DropdownMenuContent align="end" sideOffset={8} className="w-48">
                         <DropdownMenuItem 
                             className="flex items-center gap-2 cursor-pointer"
-                            onClick={handleRename}
+                            onClick={handleEditName}
                         >
                             <FiEdit className="w-4 h-4" />
                             Rename
@@ -73,6 +147,7 @@ export function BoardList({ list }: BoardListProps) {
                         <DropdownMenuItem 
                             className="flex items-center gap-2 cursor-pointer text-red-600"
                             onClick={handleDelete}
+                            disabled={isDeleting}
                         >
                             <FiTrash2 className="w-4 h-4" />
                             Delete
@@ -88,6 +163,7 @@ export function BoardList({ list }: BoardListProps) {
                         <CardInList
                             key={card.id}
                             card={card}
+                            listName={listName}
                         />
                     ))
                 ) : null}
@@ -121,7 +197,7 @@ export function BoardList({ list }: BoardListProps) {
                                     setItemTitle("");
                                     setIsAddingItem(false);
                                 }}
-                                className="px-3 py-1.5 text-gray-600 text-sm hover:bg-gray-200 rounded-md transition-colors cursor-pointer"
+                                className="px-3 py-1.5 text-black text-sm hover:bg-gray-200 rounded-md transition-colors cursor-pointer font-semibold"
                             >
                                 Cancel
                             </button>
