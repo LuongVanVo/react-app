@@ -84,8 +84,19 @@ export function BoardProvider({ children }: { children: ReactNode }) {
         }
 
         try {
+            // Check if nothing changed
+            const nameUnchanged = !request.name || request.name.trim() === board.name.trim();
+            const descriptionUnchanged = request.description === undefined || request.description?.trim() === board.description?.trim();
+            
+            if (nameUnchanged && descriptionUnchanged) {
+                // No changes, just close dialog
+                setIsEditDialogOpen(false);
+                setSelectedBoard(null);
+                return;
+            }
+            console.log("hihi");
             await editBoardToWorkspace(request);
-
+            console.log("hehe");
             setBoards(prevBoards => prevBoards.map(b => b.id === request.boardId ? { ...b, ...request } : b));
             setIsEditDialogOpen(false);
             setSelectedBoard(null);

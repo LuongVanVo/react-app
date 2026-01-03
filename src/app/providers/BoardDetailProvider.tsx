@@ -12,6 +12,7 @@ interface BoardDetailContextType {
 
     // Functions
     getBoardById: (request: GetBoardByIdRequest) => Promise<GetBoardByIdResponse>;
+    updateBoardName: (name: string) => Promise<void>;
 }
 
 const BoardDetailContext = createContext<BoardDetailContextType | undefined>(undefined);
@@ -23,7 +24,7 @@ export function BoardDetailProvider({ children }: { children: React.ReactNode })
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const { getBoardById } = useBoards();
+    const { getBoardById, editBoardToWorkspace } = useBoards();
 
     // fetch board data
     useEffect(() => {
@@ -48,11 +49,31 @@ export function BoardDetailProvider({ children }: { children: React.ReactNode })
         }
     }
 
+    const updateBoardName = async (name: string) => {
+        try {
+
+            // if nothing changed, return
+            if (!name.trim() || name.trim() === board?.name) {
+                return;
+            }
+            console.log("hehe");
+            await editBoardToWorkspace({
+                boardId: board?.id || "",
+                name: name.trim(),
+            });
+            setBoard({ ...board, name } as Board);
+        } catch (err) {
+            console.error(`Failed to update board name: ${err}`);
+            throw err;
+        }
+    }
+
     const value : BoardDetailContextType = {
         board,
         isLoading,
         error,
         getBoardById,
+        updateBoardName,
     }
 
     return (
