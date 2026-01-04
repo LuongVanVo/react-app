@@ -101,3 +101,34 @@ export interface UnassignUserFromCardRequest {
   cardId: string;
   userId: string;
 }
+
+export interface CreateCommentOnCardRequest {
+  cardId: string;
+  body: string; // content of comment
+  parent_id?: string; // if comment is a reply to another comment
+}
+
+export interface CreateCommentOnCardResponse {
+  card_id: string;
+  author_id: string;
+  body: string;
+  parent_id?: string;
+  edited_at?: string;
+  id: number;
+  created_at: string;
+}
+
+export interface GetAllCommentsOfCardRequest {
+  cardId: string;
+}
+
+export interface GetAllCommentsOfCardResponse {
+  id: number;
+  card_id: string;
+  author_id: string;
+  body: string;
+  parent_id?: string;
+  edited_at?: string;
+  created_at: string;
+  author: User;
+}

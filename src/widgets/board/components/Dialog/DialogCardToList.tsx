@@ -5,9 +5,9 @@ import { Input } from "@/shared/ui/input";
 import { FiX, FiTag, FiCheckSquare, FiUserPlus, FiTrash2 } from "react-icons/fi";
 import type { Card } from "@/features/cards/index";
 import { useCardDetailContext } from "@/app/providers/CardDetailProvider";
-import { useUser } from "@/app/providers/UserProvider";
 import conKhiImg from "@/shared/assets/img/conKhi.jpg";
 import { useBoardDetail } from "@/app/providers/BoardDetailProvider";
+import { CardComments } from "../Card/CardComments";
 
 interface DialogCardToListProps {
     isOpen?: boolean;
@@ -19,10 +19,8 @@ interface DialogCardToListProps {
 export function DialogCardToList({ isOpen, onOpenChange, card, listName }: DialogCardToListProps) {
     const [title, setTitle] = useState(card.title);
     const [description, setDescription] = useState(card.description);
-    const [comment, setComment] = useState("");
     const [isDeleting, setIsDeleting] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
-    const { user } = useUser();
     const { membersOfBoard } = useBoardDetail();
 
     const { 
@@ -281,25 +279,7 @@ export function DialogCardToList({ isOpen, onOpenChange, card, listName }: Dialo
                     </div>
 
                     {/* Comments Section */}
-                    <div className="space-y-3 pt-4 border-t">
-                        <div className="flex items-center gap-2">
-                            <span className="text-sm font-semibold text-gray-900">Comments</span>
-                        </div>
-                        <div className="flex items-start gap-3">
-                            <img
-                                src={user?.avatar_url ?? conKhiImg}
-                                alt="Current user"
-                                className="w-8 h-8 rounded-full"
-                            />
-                            <Input
-                                type="text"
-                                value={comment}
-                                onChange={(e) => setComment(e.target.value)}
-                                placeholder="Write a comment..."
-                                className="flex-1"
-                            />
-                        </div>
-                    </div>
+                    <CardComments cardId={card.id} />
                 </div>
 
                 {/* Footer */}

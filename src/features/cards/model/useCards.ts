@@ -4,10 +4,14 @@ import type {
   AssignedUserToCardResponse,
   CreateCardRequest,
   CreateCardResponse,
+  CreateCommentOnCardRequest,
+  CreateCommentOnCardResponse,
   DeleteCardRequest,
   DeleteCardResponse,
   GetAllCardsOfBoardRequest,
   GetAllCardsOfBoardResponse,
+  GetAllCommentsOfCardRequest,
+  GetAllCommentsOfCardResponse,
   UnassignUserFromCardRequest,
   UpdateCardRequest,
   UpdateCardResponse,
@@ -103,6 +107,36 @@ export const useCards = () => {
     }
   };
 
+  // create comment on card
+  const createCommentOnCard = async (
+    request: CreateCommentOnCardRequest,
+  ): Promise<CreateCommentOnCardResponse> => {
+    try {
+      const data = await cardApi.createCommentOnCard(request);
+      if (!data) throw new Error("Failed to create comment on card");
+      return data;
+    } catch (err) {
+      const apiError = err as ApiError;
+      console.error(`Failed to create comment on card: ${apiError.message}`);
+      throw apiError;
+    }
+  };
+
+  // get all comments of card
+  const getAllCommentsOfCard = async (
+    request: GetAllCommentsOfCardRequest,
+  ): Promise<GetAllCommentsOfCardResponse> => {
+    try {
+      const data = await cardApi.getAllCommentsOfCard(request);
+      if (!data) throw new Error("Failed to get all comments of card");
+      return data;
+    } catch (err) {
+      const apiError = err as ApiError;
+      console.error(`Failed to get all comments of card: ${apiError.message}`);
+      throw apiError;
+    }
+  };
+
   return {
     getAllCardsOfBoard,
     createCard,
@@ -110,5 +144,7 @@ export const useCards = () => {
     updateCard,
     assignUserToCard,
     unassignUserFromCard,
+    createCommentOnCard,
+    getAllCommentsOfCard,
   };
 };

@@ -39,6 +39,8 @@ export const API_ENDPOINTS = {
     UPDATE_CARD: "/cards/{cardId}",
     ASSIGN_USER_TO_CARD: "/cards/{cardId}/members",
     UNASSIGN_USER_FROM_CARD: "/cards/{cardId}/members/{userId}",
+    CREATE_COMMENT_ON_CARD: "/cards/{cardId}/comments",
+    GET_ALL_COMMENTS_OF_CARD: "/cards/{cardId}/comments",
   },
   LIST: {
     GET_ALL_LISTS_OF_BOARD: "/boards/{boardId}/lists?archived=false",

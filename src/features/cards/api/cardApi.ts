@@ -4,10 +4,14 @@ import type {
   AssignedUserToCardResponse,
   CreateCardRequest,
   CreateCardResponse,
+  CreateCommentOnCardRequest,
+  CreateCommentOnCardResponse,
   DeleteCardRequest,
   DeleteCardResponse,
   GetAllCardsOfBoardRequest,
   GetAllCardsOfBoardResponse,
+  GetAllCommentsOfCardRequest,
+  GetAllCommentsOfCardResponse,
   UnassignUserFromCardRequest,
   UpdateCardRequest,
   UpdateCardResponse,
@@ -66,6 +70,26 @@ export const cardApi = {
         "{cardId}",
         request.cardId,
       ).replace("{userId}", request.userId),
+    );
+  },
+
+  // create comment on card
+  createCommentOnCard: (
+    request: CreateCommentOnCardRequest,
+  ): Promise<CreateCommentOnCardResponse> => {
+    const { cardId, ...body } = request;
+    return fetchFactory.post<CreateCommentOnCardResponse>(
+      CardEndpoint.CREATE_COMMENT_ON_CARD.replace("{cardId}", cardId),
+      body,
+    );
+  },
+
+  // get all comments of card
+  getAllCommentsOfCard: (
+    request: GetAllCommentsOfCardRequest,
+  ): Promise<GetAllCommentsOfCardResponse> => {
+    return fetchFactory.get<GetAllCommentsOfCardResponse>(
+      CardEndpoint.GET_ALL_COMMENTS_OF_CARD.replace("{cardId}", request.cardId),
     );
   },
 };
