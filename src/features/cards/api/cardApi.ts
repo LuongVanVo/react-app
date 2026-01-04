@@ -1,11 +1,14 @@
 import { fetchFactory } from "@/shared/api";
 import type {
+  AssignedUserToCardRequest,
+  AssignedUserToCardResponse,
   CreateCardRequest,
   CreateCardResponse,
   DeleteCardRequest,
   DeleteCardResponse,
   GetAllCardsOfBoardRequest,
   GetAllCardsOfBoardResponse,
+  UnassignUserFromCardRequest,
   UpdateCardRequest,
   UpdateCardResponse,
 } from "./type";
@@ -41,6 +44,28 @@ export const cardApi = {
     return fetchFactory.patch<UpdateCardResponse>(
       CardEndpoint.UPDATE_CARD.replace("{cardId}", cardId),
       body,
+    );
+  },
+
+  // assign user to card
+  assignUserToCard: (
+    request: AssignedUserToCardRequest,
+  ): Promise<AssignedUserToCardResponse> => {
+    return fetchFactory.post<AssignedUserToCardResponse>(
+      CardEndpoint.ASSIGN_USER_TO_CARD.replace("{cardId}", request.cardId),
+      { user_id: request.user_id },
+    );
+  },
+
+  // unassign user from card
+  unassignUserFromCard: (
+    request: UnassignUserFromCardRequest,
+  ): Promise<void> => {
+    return fetchFactory.delete<void>(
+      CardEndpoint.UNASSIGN_USER_FROM_CARD.replace(
+        "{cardId}",
+        request.cardId,
+      ).replace("{userId}", request.userId),
     );
   },
 };

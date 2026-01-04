@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/shared/ui/dialog";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
@@ -7,6 +7,7 @@ import type { Card } from "@/features/cards/index";
 import { useCardDetailContext } from "@/app/providers/CardDetailProvider";
 import { useUser } from "@/app/providers/UserProvider";
 import conKhiImg from "@/shared/assets/img/conKhi.jpg";
+import { useBoardDetail } from "@/app/providers/BoardDetailProvider";
 
 interface DialogCardToListProps {
     isOpen?: boolean;
@@ -22,25 +23,98 @@ export function DialogCardToList({ isOpen, onOpenChange, card, listName }: Dialo
     const [isDeleting, setIsDeleting] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
     const { user } = useUser();
+    const { membersOfBoard } = useBoardDetail();
 
-    const { fetchDeleteCard, removeCardFromState, fetchUpdateCard, updateCardInState } = useCardDetailContext();
+    const { 
+            fetchDeleteCard, 
+            removeCardFromState, 
+            fetchUpdateCard, 
+            updateCardInState, 
+            handleAssignUserToCard, 
+            handleUnassignUserFromCard 
+        } = useCardDetailContext();
 
     console.log("isUpdating", isUpdating);
+
+    const assignedUsers = useMemo(() => {
+        if (!card.cardMembers || card.cardMembers.length === 0) return [];
+
+        return card.cardMembers
+            .map(cardMember => {
+                const memberInfo = membersOfBoard.find(m => m.user_id === cardMember.user_id);
+
+                if (!memberInfo) return null;
+
+                return {
+                    user_id: cardMember.user_id,
+                    name: memberInfo.user.name,
+                    email: memberInfo.user.email,
+                    avatar_url: memberInfo.user.avatar_url,
+                    assigned_at: cardMember.assigned_at,
+                };
+            })
+            .filter(Boolean) as any[];
+    }, [card.cardMembers, membersOfBoard]);
+
+    const availableUsers = useMemo(() => {
+        const assignedUserIds = new Set(assignedUsers.map(u => u.user_id));
+        return membersOfBoard.filter(user => !assignedUserIds.has(user.user_id));
+    }, [membersOfBoard, assignedUsers]);
     
     useEffect(() => {
         setTitle(card.title);
         setDescription(card.description);
     }, [card.title, card.description]);
 
-    // Mock data
-    const assignedUsers = [
-        { id: "1", name: "John Doe", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=John" }
-    ];
+    const handleAssignUserClick = async (userId: string) => {
+        try {
+            const newCardMember = {
+                card_id: card.id,
+                user_id: userId,
+                assigned_at: new Date().toISOString(),
+            };
+            
+            updateCardInState(card.id, { 
+                cardMembers: [
+                    ...(card.cardMembers || []).filter(m => m.user_id !== userId),
+                    newCardMember
+                ]
+            });
+            const response = await handleAssignUserToCard({ cardId: card.id, user_id: userId });
 
-    const availableUsers = [
-        { id: "2", name: "Jane Smith", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jane" },
-        { id: "3", name: "Bob Johnson", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Bob" }
-    ];
+            if (response.assigned_at) {
+                const updatedCardMember = {
+                    card_id: card.id,
+                    user_id: userId,
+                    assigned_at: response.assigned_at,
+                };
+                
+                updateCardInState(card.id, { 
+                    cardMembers: [
+                        ...(card.cardMembers || []).filter(m => m.user_id !== userId),
+                        updatedCardMember
+                    ]
+                });
+            }
+            
+        } catch (err) {
+            console.error("Failed to assign user: ", err);
+            throw err;
+        }
+    }
+
+    const handleUnassignUserClick = async (userId: string) => {
+        try {
+            const previousCardMembers = card.cardMembers || [];
+
+            updateCardInState(card.id, { cardMembers: previousCardMembers.filter(u => u.user_id !== userId) });
+
+            await handleUnassignUserFromCard({ cardId: card.id, userId });
+        } catch (err) {
+            console.error("Failed to unassign user: ", err);
+            throw err;
+        }
+    }
 
     const handleTitleBlur = async () => {
         const trimmedTitle = title.trim();
@@ -166,18 +240,18 @@ export function DialogCardToList({ isOpen, onOpenChange, card, listName }: Dialo
                             Assigned Users
                         </label>
                         <div className="flex items-center gap-2 flex-wrap">
-                            {assignedUsers.map((user) => (
+                            {assignedUsers.map((assignedUser) => (
                                 <div
-                                    key={user.id}
+                                    key={assignedUser.user_id}
                                     className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full"
                                 >
                                     <img
-                                        src={user.avatar}
-                                        alt={user.name}
+                                        src={assignedUser.avatar_url ?? ""}
+                                        alt={assignedUser.name ?? ""}
                                         className="w-6 h-6 rounded-full"
                                     />
-                                    <span className="text-sm">{user.name}</span>
-                                    <button className="ml-1 hover:text-red-600">
+                                    <span className="text-sm">{assignedUser.name ?? ""}</span>
+                                    <button className="ml-1 hover:text-red-600" onClick={() => handleUnassignUserClick(assignedUser.user_id)}>
                                         <FiX className="w-4 h-4" />
                                     </button>
                                 </div>
@@ -190,15 +264,16 @@ export function DialogCardToList({ isOpen, onOpenChange, card, listName }: Dialo
                             <div className="flex items-center gap-2 flex-wrap">
                                 {availableUsers.map((user) => (
                                     <button
-                                        key={user.id}
-                                        className="flex items-center gap-2 px-3 py-1.5 border border-gray-300 rounded-full hover:bg-gray-50 transition-colors"
+                                        key={user.user_id}
+                                        className="flex items-center gap-2 px-3 py-1.5 border border-gray-150 rounded-md hover:bg-gray-50 transition-colors "
+                                        onClick={() => handleAssignUserClick(user.user_id)}
                                     >
                                         <img
-                                            src={user.avatar}
-                                            alt={user.name}
+                                            src={user.user.avatar_url ?? conKhiImg}
+                                            alt={user.user.name ?? "User"}
                                             className="w-6 h-6 rounded-full"
                                         />
-                                        <span className="text-sm">{user.name}</span>
+                                        <span className="text-sm font-semibold">{user.user.name ?? "User"}</span>
                                     </button>
                                 ))}
                             </div>
