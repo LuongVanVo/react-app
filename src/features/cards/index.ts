@@ -13,4 +13,8 @@ export type {
   AssignedUserToCardRequest,
   AssignedUserToCardResponse,
   UnassignUserFromCardRequest,
+  CreateCommentOnCardRequest,
+  CreateCommentOnCardResponse,
+  GetAllCommentsOfCardRequest,
+  GetAllCommentsOfCardResponse,
 } from "./api/type";
