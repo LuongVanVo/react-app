@@ -37,6 +37,8 @@ export const API_ENDPOINTS = {
     CREATE_CARD: "/cards",
     DELETE_CARD: "/cards/{cardId}/archive",
     UPDATE_CARD: "/cards/{cardId}",
+    ASSIGN_USER_TO_CARD: "/cards/{cardId}/members",
+    UNASSIGN_USER_FROM_CARD: "/cards/{cardId}/members/{userId}",
   },
   LIST: {
     GET_ALL_LISTS_OF_BOARD: "/boards/{boardId}/lists?archived=false",

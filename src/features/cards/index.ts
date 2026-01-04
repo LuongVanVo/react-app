@@ -10,4 +10,7 @@ export type {
   DeleteCardResponse,
   UpdateCardRequest,
   UpdateCardResponse,
+  AssignedUserToCardRequest,
+  AssignedUserToCardResponse,
+  UnassignUserFromCardRequest,
 } from "./api/type";

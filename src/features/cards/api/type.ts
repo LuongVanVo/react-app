@@ -19,6 +19,22 @@ export interface Card {
   lists: ListItem[];
   labels: any[];
   checklists: any[];
+  cardMembers: CardMember[];
+  assigned_users: AssignedUser[];
+}
+
+interface CardMember {
+  card_id: string;
+  user_id: string;
+  assigned_at: string;
+}
+
+interface AssignedUser {
+  user_id: string;
+  name: string;
+  email: string;
+  avatar_url: string;
+  assigned_at: string;
 }
 
 export interface ListItem {
@@ -66,4 +82,22 @@ export interface UpdateCardRequest {
 
 export interface UpdateCardResponse {
   card: Card;
+}
+
+export interface AssignedUserToCardRequest {
+  cardId: string;
+  user_id: string;
+}
+
+export interface AssignedUserToCardResponse {
+  userId: string;
+  name: string;
+  email: string;
+  avatar_url: string;
+  assigned_at: string;
+}
+
+export interface UnassignUserFromCardRequest {
+  cardId: string;
+  userId: string;
 }
