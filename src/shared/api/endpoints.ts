@@ -30,6 +30,7 @@ export const API_ENDPOINTS = {
       "/boards/{boardId}/available-members",
     INVITE_USER_TO_BOARD: "/boards/{boardId}/invitations",
     ACCEPT_INVITATION_TO_BOARD: "/boards/invitations/{token}/accept",
+    GET_ALL_MEMBER_OF_BOARD: "/boards/{boardId}/members",
   },
   CARD: {
     GET_ALL_CARDS_OF_BOARD: "/boards/{boardId}/cards?archived=false",
