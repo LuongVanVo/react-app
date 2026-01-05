@@ -31,6 +31,8 @@ export const API_ENDPOINTS = {
     INVITE_USER_TO_BOARD: "/boards/{boardId}/invitations",
     ACCEPT_INVITATION_TO_BOARD: "/boards/invitations/{token}/accept",
     GET_ALL_MEMBER_OF_BOARD: "/boards/{boardId}/members",
+    CREATE_LABEL_ON_BOARD: "/boards/{boardId}/labels",
+    GET_ALL_LABELS_OF_BOARD: "/boards/{boardId}/labels",
   },
   CARD: {
     GET_ALL_CARDS_OF_BOARD: "/boards/{boardId}/cards?archived=false",
@@ -41,6 +43,10 @@ export const API_ENDPOINTS = {
     UNASSIGN_USER_FROM_CARD: "/cards/{cardId}/members/{userId}",
     CREATE_COMMENT_ON_CARD: "/cards/{cardId}/comments",
     GET_ALL_COMMENTS_OF_CARD: "/cards/{cardId}/comments",
+    ADD_LABEL_TO_CARD: "/cards/{cardId}/labels",
+    GET_LABELS_OF_CARD: "/cards/{cardId}/labels",
+    GET_AVAILABLE_LABELS_OF_BOARD: "/cards/{cardId}/labels/available",
+    REMOVE_LABEL_FROM_CARD: "/cards/{cardId}/labels/{labelId}",
   },
   LIST: {
     GET_ALL_LISTS_OF_BOARD: "/boards/{boardId}/lists?archived=false",

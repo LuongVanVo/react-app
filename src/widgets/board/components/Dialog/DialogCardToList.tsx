@@ -2,12 +2,15 @@ import { useEffect, useMemo, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/shared/ui/dialog";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
-import { FiX, FiTag, FiCheckSquare, FiUserPlus, FiTrash2 } from "react-icons/fi";
+import { FiX, FiCheckSquare, FiUserPlus, FiTrash2 } from "react-icons/fi";
 import type { Card } from "@/features/cards/index";
 import { useCardDetailContext } from "@/app/providers/CardDetailProvider";
 import conKhiImg from "@/shared/assets/img/conKhi.jpg";
 import { useBoardDetail } from "@/app/providers/BoardDetailProvider";
 import { CardComments } from "../Card/CardComments";
+import { AddTagToCard } from "./AddTagToCard";
+import { useLabels } from "@/features/labels/index";
+import { TAG_COLORS } from "@/shared/constants/tagColors";
 
 interface DialogCardToListProps {
     isOpen?: boolean;
@@ -23,6 +26,24 @@ export function DialogCardToList({ isOpen, onOpenChange, card, listName }: Dialo
     const [isUpdating, setIsUpdating] = useState(false);
     const { membersOfBoard } = useBoardDetail();
 
+    const { getLabelsOfCard } = useLabels();
+    const [cardLabels, setCardLabels] = useState<any[]>([]);
+
+    useEffect(() => {
+        if (card.id) {
+            fetchCardLabels();
+        }
+    }, [card.id]);
+
+    const fetchCardLabels = async () => {
+        try {
+            const data = await getLabelsOfCard({ cardId: card.id });
+            const labelsData = Array.isArray(data) ? data : [data];
+            setCardLabels(labelsData.filter(Boolean));
+        } catch (err) {
+            console.error(`Failed to fetch card labels: ${err}`);
+        }
+    }
     const { 
             fetchDeleteCard, 
             removeCardFromState, 
@@ -167,6 +188,7 @@ export function DialogCardToList({ isOpen, onOpenChange, card, listName }: Dialo
             setIsDeleting(true);
             await fetchDeleteCard({ cardId: card.id });
             removeCardFromState(card.id);
+            setCardLabels([]);
             onOpenChange?.(false);
             setIsDeleting(false);
         }
@@ -190,10 +212,15 @@ export function DialogCardToList({ isOpen, onOpenChange, card, listName }: Dialo
                 <div className="space-y-6 py-4">
                     {/* Action Buttons */}
                     <div className="flex items-center gap-2 flex-wrap">
-                        <button className="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 transition-colors font-semibold shadow-md border-gray-300">
+                        {/* <button className="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 transition-colors font-semibold shadow-md border-gray-300">
                             <FiTag className="w-4 h-4" />
                             Add tags
-                        </button>
+                        </button> */}
+                        <AddTagToCard
+                            cardId={card.id}
+                            boardId={card.board_id}
+                            onTagAdded={fetchCardLabels}
+                        />
                         <button className="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 transition-colors font-semibold shadow-md border-gray-300">
                             <FiCheckSquare className="w-4 h-4" />
                             Add todo
@@ -231,6 +258,31 @@ export function DialogCardToList({ isOpen, onOpenChange, card, listName }: Dialo
                             onBlur={handleDescriptionBlur}
                         />
                     </div>
+
+                    {/* Labels */}
+                    {cardLabels && cardLabels.length > 0 && (
+                        <div className="space-y-2">
+                        <label className="text-sm font-semibold text-gray-900">
+                            Tags
+                        </label>
+                        <div className="flex items-center gap-2 flex-wrap">
+                            {cardLabels.map((cardLabel) => {
+                                const colorConfig = TAG_COLORS.find(c => c.hex === cardLabel.color);
+                                return (
+                                    <div
+                                        key={cardLabel.id}
+                                        className={`
+                                            px-3 py-1 rounded-full text-white text-xs font-medium
+                                            ${colorConfig?.bgClass || 'bg-gray-500'}
+                                        `}
+                                    >
+                                        {cardLabel.name}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                    )}
 
                     {/* Assigned Users */}
                     <div className="space-y-3">
