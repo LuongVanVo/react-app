@@ -82,7 +82,7 @@ export function AddTagToCard({ cardId, boardId, onTagAdded }: AddTagToCardProps)
                 label => label.name === labelNameToCreate && 
                         label.color === labelColorToCreate
             );
-        
+
             // tự động add label vào card
             if (newLabel?.id) {
                 await handleAddLabelToCard({
