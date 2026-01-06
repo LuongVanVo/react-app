@@ -2,6 +2,7 @@ import { BoardDetailProvider } from "@/app/providers/BoardDetailProvider";
 import { ListProvider, CardDetailProvider } from "@/app/providers/index";
 import { BoardWidget } from "@/widgets/board/ui/BoardWidget";
 import { LabelProvider } from "@/app/providers/LabelProvider";
+import { ChecklistProvider } from "@/app/providers/ChecklistProvider";
 
 export function BoardPage() {
     return (
@@ -9,7 +10,9 @@ export function BoardPage() {
             <ListProvider>
                 <CardDetailProvider>
                     <LabelProvider>
-                        <BoardWidget />
+                        <ChecklistProvider>
+                            <BoardWidget />
+                        </ChecklistProvider>
                     </LabelProvider>
                 </CardDetailProvider>
             </ListProvider>
