@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/shared/ui/dialog";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
-import { FiX, FiCheckSquare, FiUserPlus, FiTrash2 } from "react-icons/fi";
+import { FiX, FiUserPlus, FiTrash2 } from "react-icons/fi";
 import type { Card } from "@/features/cards/index";
 import { useCardDetailContext } from "@/app/providers/CardDetailProvider";
 import conKhiImg from "@/shared/assets/img/conKhi.jpg";
@@ -11,6 +11,7 @@ import { CardComments } from "../Card/CardComments";
 import { AddTagToCard } from "./AddTagToCard";
 import { useLabels } from "@/features/labels/index";
 import { TAG_COLORS } from "@/shared/constants/tagColors";
+import { DialogChecklist } from "./DialogChecklist";
 
 interface DialogCardToListProps {
     isOpen?: boolean;
@@ -221,10 +222,7 @@ export function DialogCardToList({ isOpen, onOpenChange, card, listName }: Dialo
                             boardId={card.board_id}
                             onTagAdded={fetchCardLabels}
                         />
-                        <button className="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 transition-colors font-semibold shadow-md border-gray-300">
-                            <FiCheckSquare className="w-4 h-4" />
-                            Add todo
-                        </button>
+                        <DialogChecklist card={card} />
                         <button className="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 transition-colors font-semibold shadow-md border-gray-300">
                             <FiUserPlus className="w-4 h-4" />
                             Add member

@@ -54,6 +54,19 @@ export const API_ENDPOINTS = {
     UPDATE_NAME_LIST: "/boards/{boardId}/lists/{listId}",
     DELETE_LIST_FROM_BOARD: "/boards/{boardId}/lists/{listId}/archive",
   },
+  CHECKLIST: {
+    GET_ALL_CHECKLISTS_OF_CARD: "/cards/{cardId}/checklists",
+    CREATE_CHECKLIST_ON_CARD: "/cards/{cardId}/checklists",
+    REMOVE_CHECKLIST_FROM_CARD: "/cards/{cardId}/checklists/{checklistId}",
+    GET_CHECKLIST_ITEMS_OF_CHECKLIST:
+      "/cards/{cardId}/checklists/{checklistId}/items",
+    CREATE_CHECKLIST_ITEM_ON_CHECKLIST:
+      "/cards/{cardId}/checklists/{checklistId}/items",
+    UPDATE_CHECKLIST_ITEM_ON_CHECKLIST:
+      "/cards/{cardId}/checklists/{checklistId}/items/{itemId}",
+    REMOVE_CHECKLIST_ITEM_ON_CHECKLIST:
+      "/cards/{cardId}/checklists/{checklistId}/items/{itemId}",
+  },
 };
 
 export const AuthEndpoint = API_ENDPOINTS.AUTH;
@@ -62,3 +75,4 @@ export const ProjectEndpoint = API_ENDPOINTS.PROJECT;
 export const BoardEndpoint = API_ENDPOINTS.BOARD;
 export const CardEndpoint = API_ENDPOINTS.CARD;
 export const ListEndpoint = API_ENDPOINTS.LIST;
+export const ChecklistEndpoint = API_ENDPOINTS.CHECKLIST;
